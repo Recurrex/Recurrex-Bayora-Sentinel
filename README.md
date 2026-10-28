@@ -1,5 +1,6 @@
 # Bayora Sentinel — SentinelOS practice range
 Developed By Recurrex
+
 A red-team / blue-team hacking range that opens in your browser. You pick a team,
 get a Linux-style practice VM (terminal, browser, mail, files, egress proxy, the
 usual recon/attack/defense tools), and fight over one target: an **AI sandbox**
