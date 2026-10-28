@@ -1,0 +1,46 @@
+%YAML 1.1
+---
+# Lab Suricata config: alert-only NDJSON on the blue leg.  Full upstream
+# config trimmed to the essentials; the full default file remains at
+# /etc/suricata/suricata.yaml for anything lab-specific overrides.
+
+vars:
+  address-groups:
+    HOME_NET: "10.66.12.0/24"
+    EXTERNAL_NET: "10.66.11.0/24"      # red leg only
+  port-groups:
+    HTTP_PORTS: "80,8080"
+    SSH_PORTS: "22"
+
+default-log-dir: /var/log/suricata/
+
+outputs:
+  - fast:
+      enabled: no
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      types:
+        - alert:
+            tagged-packets: no
+        - anomaly
+  - stats:
+      enabled: no
+
+logging:
+  - default:
+      enabled: yes
+      level: info
+  - file:
+      enabled: yes
+      level: info
+      filename: suricata.log
+
+rule-files:
+  - /etc/suricata/rules/sentinel.rules
+
+# 亲和 detection: offline rule pack only (no download on build off, the
+# guest has no internet).
+engine-analysis:
+  rules-fast-pattern: no
+  rules: no

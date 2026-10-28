@@ -1,0 +1,17 @@
+<!--
+  Isolated management LAN: how the broker (host) reaches both guests over
+  SSH (PTY bridge + collector posts).  forward=none again: nothing routed
+  onward, guests can only talk to 10.66.10.1.
+-->
+<network>
+  <name>sentinel-mgmt</name>
+  <forward mode="none"/>
+  <bridge name="virbr-sm" stp="off"/>
+  <ip address="10.66.10.1" netmask="255.255.255.0">
+    <dhcp>
+      <range start="10.66.10.100" end="10.66.10.150"/>
+      <host mac="52:54:00:10:00:11" ip="10.66.10.11"/>
+      <host mac="52:54:00:10:00:12" ip="10.66.10.12"/>
+    </dhcp>
+  </ip>
+</network>

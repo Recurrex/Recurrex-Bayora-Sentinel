@@ -1,0 +1,16 @@
+<!--
+  Isolated (forward=none) blue-side LAN.  Same rules as the red net: no
+  forward, no WAN access, host nftables guard as the backstop.
+-->
+<network>
+  <name>sentinel-blue</name>
+  <forward mode="none"/>
+  <bridge name="virbr-sb" stp="off"/>
+  <ip address="10.66.12.1" netmask="255.255.255.0">
+    <!-- reserved, static for blue-vm (defender) -->
+    <dhcp>
+      <range start="10.66.12.100" end="10.66.12.150"/>
+      <host mac="52:54:00:12:00:11" ip="10.66.12.11"/>
+    </dhcp>
+  </ip>
+</network>

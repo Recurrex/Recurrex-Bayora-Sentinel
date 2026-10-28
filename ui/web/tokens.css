@@ -1,0 +1,125 @@
+/* ============================================================================
+   Bayora Sentinel — design tokens
+   ----------------------------------------------------------------------------
+   The single source of truth for colour, type, spacing and chrome metrics.
+   desktop.css consumes these variables; nothing else may hard-code a colour.
+
+   Palette rules:
+   - Neutral greys for everything structural.
+   - ONE cool accent per seat: red team warm, blue team cool. Never purple.
+   - ONE danger colour for alerts. Colour is state, not decoration: icons are
+     monochrome unless they carry a state (alert = red, warning = amber).
+   - Dark is the default theme; light is an override via [data-theme="light"]
+   on the <html> element.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* -- structure (dark theme default) ------------------------------------ */
+  --bg: #0f1115;              /* wallpaper and page background */
+  --bg-deep: #0a0c0f;         /* deepest well (terminal, code) */
+  --panel: #16191f;           /* window surface */
+  --panel-2: #1b2027;         /* chrome (title bars, taskbar) */
+  --panel-3: #222833;         /* wells, inputs, hovers */
+
+  --line: #262c35;            /* hairline border */
+  --line-strong: #3a414d;     /* focused / strong border */
+
+  --ink: #dfe3ea;             /* primary text */
+  --bright: #f3f5f8;          /* titles */
+  --muted: #9aa1ad;           /* secondary text */
+  --faint: #6d7480;           /* hints, captions */
+
+  /* -- accents ------------------------------------------------------------ */
+  --red-team: #e05d52;        /* warm red — attacker, alerting sources */
+  --blue-team: #58a6ff;       /* cool blue — defender */
+  --observer: #8ea2c0;        /* neutral steel — read-only seat */
+
+  --good: #3fb950;            /* state: healthy */
+  --warn: #d29922;            /* state: warning (amber) */
+  --bad: #e5484d;             /* state: danger — the only red-for-danger */
+
+  --sel: rgba(88, 166, 255, 0.24);          /* text selection */
+  --focus: rgba(88, 166, 255, 0.55);        /* focus ring */
+  --shadow-win: 0 10px 30px rgba(0, 0, 0, 0.5);  /* focused window only */
+  --shadow-pop: 0 6px 18px rgba(0, 0, 0, 0.4);
+
+  /* -- type ---------------------------------------------------------------- */
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-mono: 12.5px;          /* logs, tables — always with tabular-nums */
+
+  /* -- chrome metrics (XFCE / Windows 11 reference) ------------------------ */
+  --panel-h: 44px;            /* taskbar height: 40–48px */
+  --titlebar-h: 32px;         /* window title bar height */
+  --r-sm: 2px;                /* inputs, cells */
+  --r: 3px;                   /* panels */
+  --r-lg: 4px;                /* windows */
+  --borders: 1px;
+  --pad: 12px;
+  --pad-lg: 16px;
+
+  /* -- table columns (fixed, so IDs and times never wrap) ------------------- */
+  --col-id: 64px;
+  --col-time: 100px;
+  --col-src: 84px;
+  --col-type: 116px;
+  --row-h: 26px;              /* virtualized log row height */
+  /* light theme hooks */
+
+  --grid: rgba(255, 255, 255, 0.035);   /* wallpaper grid line */
+  --mark: #3a231f21;                     /* wallpaper watermark (won't be used raw) */
+  /* Minimal wallpaper design layer: two desaturated team-tinted glows and a
+     1px horizon. Enough depth to feel designed, quiet enough to ignore. */
+  --wall-glow-red: rgba(160, 60, 50, 0.10);
+  --wall-glow-blue: rgba(45, 90, 150, 0.10);
+  --wall-horizon: rgba(255, 255, 255, 0.04);
+  --watermark: rgba(223, 227, 234, 0.14); /* low-contrast logo, bottom-right */
+  --dim: rgba(15, 17, 21, 0.55);          /* inactive window dim overlay */
+}
+
+/* -- light theme ---------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #e9ebf0;
+  --bg-deep: #f4f5f8;
+  --panel: #ffffff;
+  --panel-2: #f2f4f8;
+  --panel-3: #e6e9ef;
+
+  --line: #cfd4dd;
+  --line-strong: #9aa4b2;
+
+  --ink: #23272f;
+  --bright: #14171c;
+  --muted: #565d68;
+  --faint: #7a828e;
+
+  --red-team: #c23a30;
+  --blue-team: #1f6fd0;
+  --observer: #4d6a8f;
+
+  --good: #1d8a43;
+  --warn: #9a6b08;
+  --bad: #d02127;
+
+  --sel: rgba(31, 111, 208, 0.18);
+  --focus: rgba(31, 111, 208, 0.5);
+  --shadow-win: 0 10px 30px rgba(20, 23, 28, 0.18);
+  --shadow-pop: 0 6px 18px rgba(20, 23, 28, 0.14);
+
+  --grid: rgba(20, 23, 28, 0.05);
+  --watermark: rgba(20, 23, 28, 0.2);
+  --dim: rgba(233, 235, 240, 0.55);
+  --wall-glow-red: rgba(190, 90, 80, 0.08);
+  --wall-glow-blue: rgba(60, 120, 190, 0.08);
+  --wall-horizon: rgba(15, 20, 28, 0.05);
+}

@@ -1,0 +1,17 @@
+<!--
+  Isolated (forward=none) red-side LAN.  No DHCP lease can ever route
+  off-host: libvirt keeps the network private and the host nftables guard
+  drops anything sourced from 10.66.0.0/16 that is not another lab subnet.
+-->
+<network>
+  <name>sentinel-red</name>
+  <forward mode="none"/>
+  <bridge name="virbr-sr" stp="off"/>
+  <ip address="10.66.11.1" netmask="255.255.255.0">
+    <!-- reserved, static for red-vm (attacker) -->
+    <dhcp>
+      <range start="10.66.11.100" end="10.66.11.150"/>
+      <host mac="52:54:00:11:00:11" ip="10.66.11.11"/>
+    </dhcp>
+  </ip>
+</network>

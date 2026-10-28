@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "attack": ["red"],
+    "defense": ["blue"],
+    "events": ["red", "blue", "observer"],
+    "ws_events": ["red", "blue", "observer"],
+    "status": ["red", "blue", "observer"],
+    "report": ["red", "blue", "observer"],
+    "verify_log": ["red", "blue", "observer"],
+    "selftest": ["red", "blue", "observer"],
+    "vm_state": ["red", "blue", "observer"],
+    "vm_action": ["red", "blue", "observer"],
+    "pty": ["red", "blue", "observer"],
+    "ingest": []
+  },
+  "visibility": {
+    "red": {
+      "types": ["attack", "response", "leak_alert"],
+      "attack_sources": ["red"],
+      "mask": []
+    },
+    "blue": {
+      "types": ["attack", "defense", "response", "leak_alert", "selftest", "tamper_alert",
+                "ids_alert", "host_event", "vm_action"],
+      "attack_sources": null,
+      "mask": ["attack"]
+    },
+    "observer": {
+      "types": "*",
+      "attack_sources": null,
+      "mask": []
+    }
+  },
+  "hidden_message": "[hidden by policy]"
+}

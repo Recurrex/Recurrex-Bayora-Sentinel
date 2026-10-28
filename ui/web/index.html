@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src http: https: ws: wss:; img-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+  <title>Bayora Sentinel · Security console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#events-heading">Skip to live events</a>
+
+  <div class="console">
+    <header class="topbar">
+      <div class="brand" aria-label="Bayora Sentinel">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span class="brand-text">
+          <span class="brand-name">BAYORA</span>
+          <span class="brand-product">SENTINEL</span>
+        </span>
+        <span class="brand-tag">read-only console</span>
+      </div>
+      <div class="session" aria-live="polite">
+        <span class="session-label">session</span>
+        <p class="session-line">
+          logged in as <strong id="session-user">unknown</strong>,
+          team <span id="session-role">unknown</span>
+        </p>
+      </div>
+    </header>
+
+    <section id="setup-notice" class="setup" aria-labelledby="setup-title" hidden>
+      <span class="setup-mark" aria-hidden="true">!</span>
+      <div class="setup-copy">
+        <h2 id="setup-title">This dashboard is not configured</h2>
+        <p>
+          Launch it with <code>sentinel web</code>. The CLI serves this page and
+          generates <code>config.js</code> with the broker URL and your session.
+        </p>
+        <p class="setup-hint">
+          If you opened <code>index.html</code> directly, serve the page through
+          the CLI or the development mock broker instead.
+        </p>
+      </div>
+    </section>
+
+    <div id="connection-notice" class="connection-notice" role="status" aria-live="assertive" hidden>
+      <span class="connection-dot" aria-hidden="true"></span>
+      <p id="connection-text"></p>
+    </div>
+
+    <section id="alert-banner" class="alert-banner" role="alert" aria-live="assertive" aria-labelledby="alert-title" hidden>
+      <span class="alert-symbol" aria-hidden="true">!</span>
+      <div class="alert-copy">
+        <p class="alert-kicker" id="alert-kicker">Security alert</p>
+        <h2 id="alert-title">Leak detected</h2>
+        <p class="alert-message" id="alert-message"></p>
+        <p class="alert-meta" id="alert-meta"></p>
+      </div>
+      <button class="button button-danger" id="alert-dismiss" type="button">Dismiss</button>
+    </section>
+
+    <section class="status-panel" aria-labelledby="status-heading">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Broker view</p>
+          <h2 id="status-heading">Environment</h2>
+        </div>
+        <p class="section-meta" id="status-updated">waiting for broker</p>
+      </div>
+      <div class="status-bar" id="status-bar" role="group" aria-label="Environment status">
+        <div class="status-item" data-key="broker">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">Broker</span>
+          <span class="status-value">unknown</span>
+        </div>
+        <div class="status-item" data-key="red">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">Red</span>
+          <span class="status-value">unknown</span>
+        </div>
+        <div class="status-item" data-key="blue">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">Blue</span>
+          <span class="status-value">unknown</span>
+        </div>
+        <div class="status-item" data-key="ai">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">AI</span>
+          <span class="status-value">unknown</span>
+        </div>
+        <div class="status-item" data-key="test">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">Test</span>
+          <span class="status-value">unknown</span>
+        </div>
+        <div class="status-item" data-key="log_ok">
+          <span class="status-dot" data-tone="unknown" aria-hidden="true"></span>
+          <span class="status-name">Audit log</span>
+          <span class="status-value">unknown</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <section class="panel events-panel" id="events-section" aria-labelledby="events-heading">
+        <div class="panel-head">
+          <div>
+            <p class="kicker">Broker stream</p>
+            <h2 id="events-heading" tabindex="-1">Live events</h2>
+          </div>
+          <div class="events-controls">
+            <span class="live-state" id="live-state" data-mode="connecting">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span id="live-text">Connecting</span>
+            </span>
+            <div class="filter">
+              <label for="type-filter">Type</label>
+              <select id="type-filter" disabled>
+                <option value="all">All types</option>
+                <option value="attack">attack</option>
+                <option value="response">response</option>
+                <option value="defense">defense</option>
+                <option value="leak_alert">leak_alert</option>
+                <option value="selftest">selftest</option>
+                <option value="tamper_alert">tamper_alert</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="events-body" id="events-body-wrap">
+          <p class="empty-state" id="events-empty" aria-live="polite">Waiting for the broker…</p>
+          <div class="table-wrap">
+            <table class="events-table" id="events-table" aria-describedby="events-note" hidden>
+              <caption class="sr-only">Security events received from the broker, newest first</caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="col-id">ID</th>
+                  <th scope="col" class="col-time">Time</th>
+                  <th scope="col" class="col-source">Source</th>
+                  <th scope="col" class="col-type">Type</th>
+                  <th scope="col" class="col-message">Message</th>
+                </tr>
+              </thead>
+              <tbody id="events-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="section-meta events-note" id="events-note">Newest first. Messages are shown as plain text.</p>
+        <p class="section-meta events-count" id="events-count"></p>
+      </section>
+
+      <aside class="side" aria-label="Log integrity and report">
+        <section class="panel integrity-panel" aria-labelledby="integrity-heading">
+          <div class="panel-head">
+            <div>
+              <p class="kicker">Audit chain</p>
+              <h2 id="integrity-heading">Log integrity</h2>
+            </div>
+            <button class="button" id="verify-button" type="button" disabled>Verify now</button>
+          </div>
+          <div class="integrity-badge" id="integrity-badge" data-tone="unknown" role="status" aria-live="polite">
+            <span class="integrity-dot" aria-hidden="true"></span>
+            <span class="integrity-text" id="integrity-text">Not checked yet</span>
+          </div>
+          <p class="meta" id="integrity-meta">Waiting for the broker.</p>
+        </section>
+
+        <section class="panel report-panel" aria-labelledby="report-heading">
+          <div class="panel-head">
+            <div>
+              <p class="kicker">Assessment</p>
+              <h2 id="report-heading">Report</h2>
+            </div>
+            <button class="button" id="report-refresh" type="button" disabled>Refresh</button>
+          </div>
+
+          <div class="report-stats">
+            <div class="stat">
+              <span class="stat-label">Leaks</span>
+              <strong class="stat-value" id="report-leaks">—</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Tamper</span>
+              <strong class="stat-value" id="report-tamper" data-tone="unknown">—</strong>
+            </div>
+          </div>
+
+          <div class="report-columns">
+            <section class="report-col" aria-labelledby="secure-heading">
+              <h3 id="secure-heading">Secure</h3>
+              <ul id="report-secure" class="report-list"></ul>
+            </section>
+            <section class="report-col report-col-risk" aria-labelledby="risk-heading">
+              <h3 id="risk-heading">Residual risk</h3>
+              <ul id="report-risk" class="report-list"></ul>
+            </section>
+          </div>
+          <p class="meta" id="report-state" aria-live="polite">Loading report…</p>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <p>Read-only window into the broker. The broker enforces visibility.</p>
+      <p>Session material stays in this page's memory and is never persisted.</p>
+    </footer>
+  </div>
+
+  <noscript>
+    <div class="noscript">
+      This dashboard needs JavaScript. It runs entirely offline and makes no
+      external requests.
+    </div>
+  </noscript>
+
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

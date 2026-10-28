@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src http: https: ws: wss:; img-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+  <title>Bayora Sentinel · Sandbox desktop</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="desktop.css">
+</head>
+<body class="desktop-body">
+
+  <div id="boot-screen" class="boot" role="status" aria-live="polite">
+    <div class="boot-inner">
+      <div class="boot-mark" aria-label="Bayora Sentinel">
+        <span class="boot-mark-b" aria-hidden="true">B</span>
+        <span class="boot-mark-text">SENTINELOS · PRACTICE RANGE</span>
+      </div>
+      <div id="boot-log" class="boot-log"></div>
+      <p class="boot-hint">Press any key or click to skip</p>
+    </div>
+  </div>
+
+  <div id="setup-notice" class="setup" role="alert" hidden>
+    <h1>Desktop not configured</h1>
+    <p>
+      Launch it with <code>b-sentinel</code> (development) or
+      <code>sentinel web</code>. The launcher generates <code>config.js</code>
+      with the broker URL and your session token.
+    </p>
+    <p>This page makes no requests until it is configured.</p>
+  </div>
+
+  <div id="desktop" class="desktop" hidden>
+    <main id="wallpaper" class="wallpaper">
+      <div id="desktop-icons" class="desk-icons" role="toolbar" aria-label="Desktop shortcuts"></div>
+      <div id="windows" class="windows"></div>
+      <div class="wallpaper-mark" aria-hidden="true">BAYORA · SENTINEL</div>
+    </main>
+
+    <footer id="taskbar" class="taskbar" role="toolbar" aria-label="Taskbar">
+      <div class="tb-start" id="taskbar-start" role="group" aria-label="Applications"></div>
+      <div id="task-windows" class="tb-windows" role="group" aria-label="Open windows"></div>
+      <div class="tb-right">
+        <button id="theme-toggle" class="tb-theme" type="button" title="Toggle theme">
+          <span class="tb-theme-icon" id="theme-icon" aria-hidden="true"></span>
+        </button>
+        <span class="role-badge" id="session-role" data-role="unknown">unknown</span>
+        <span class="tray" id="tray" role="group" aria-label="System status"></span>
+        <span class="session-user" id="session-user">unknown</span>
+        <span id="clock" class="clock">--:--:--</span>
+        <a class="console-link" href="/">console</a>
+      </div>
+    </footer>
+
+    <div id="tray-popover" class="tray-pop" role="dialog" aria-label="System status detail" hidden></div>
+
+    <div id="snap-preview" class="snap-preview" hidden></div>
+
+    <div id="alert-toast" class="toast" role="alert" aria-live="assertive" hidden>
+      <span class="toast-symbol" aria-hidden="true">!</span>
+      <div class="toast-copy">
+        <p class="toast-kicker" id="toast-kicker">Security alert</p>
+        <p class="toast-message" id="toast-message"></p>
+      </div>
+      <button class="toast-dismiss" id="toast-dismiss" type="button">Dismiss</button>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="noscript">
+      The sandbox desktop needs JavaScript. It runs entirely offline and makes
+      no external requests.
+    </div>
+  </noscript>
+
+  <script src="config.js"></script>
+  <script src="desktop.js" defer></script>
+</body>
+</html>

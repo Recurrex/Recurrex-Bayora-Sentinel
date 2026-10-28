@@ -1,0 +1,15 @@
+#!/bin/sh
+# b-sentinel — portable entry point for the development launcher.
+# Works in Linux/macOS shells and Git Bash; Windows cmd/PowerShell can use
+# b-sentinel.cmd instead.
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if command -v python3 >/dev/null 2>&1; then
+    PYTHON=python3
+elif command -v python >/dev/null 2>&1; then
+    PYTHON=python
+else
+    echo "b-sentinel: Python 3.11+ is required" >&2
+    exit 127
+fi
+exec "$PYTHON" "$ROOT/ui/launcher.py" "$@"

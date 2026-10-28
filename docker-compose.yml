@@ -1,0 +1,74 @@
+# Bayora Sentinel services.  Guests are NOT containers -- they run under
+# libvirt on the Linux host (lab/README.md).  What live in Docker:
+#   * broker   -- the FastAPI broker (SPEC.md API + lab endpoints)
+#   * collector -- optional host-side variant of the blue-vm fact collector
+#   * vnc      -- noVNC/websockify proxy for the streamed desktop
+# The rest of the network is the guest lab only; no stack here reaches it
+# except through the host-only 10.66.10.0/24 mgmt bridge.
+
+services:
+  broker:
+    build: backend/broker
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - SECRET_PATH=/run/secrets/broker_secret
+      - CANARIES_PATH=/run/secrets/canaries
+      - LOG_DB=/var/lib/sentinel/audit.db
+      # pty bridge into the guests (key dir + fixed guest IPs)
+      - LAB_KEY_DIR=/run/secrets/lab-keys
+      - VM_MANAGER_ENABLED=${VM_MANAGER_ENABLED:-1}
+      - LIBVIRT_URI=${LIBVIRT_URI:-qemu:///system}
+      - COLLECTOR_INGEST_TOKEN_FILE=/run/secrets/collector_token
+    secrets:
+      - broker_secret
+      - canaries
+      - collector_token
+    volumes:
+      - broker-audit:/var/lib/sentinel
+      # libvirt socket: only when you want the broker to start/stop guests
+      - /var/run/libvirt/libvirt-sock:/run/libvirt/libvirt-sock:ro
+    networks:
+      - sentinel-host-mgmt
+
+  collector:
+    build: backend/collector
+    profiles: ["host-collector"]       # opt-in; normally runs inside blue-vm
+    environment:
+      - BROKER_URL=http://broker:8000
+      - COLLECTOR_TOKEN_FILE=/run/secrets/collector_token
+    secrets:
+      - collector_token
+    networks:
+      - sentinel-host-mgmt
+
+  vnc:
+    image: efb3/websockify:latest
+    command: >
+      websockify 127.0.0.1:5701 10.66.10.11:5901
+    ports:
+      - "127.0.0.1:5701:5701"
+    networks:
+      - sentinel-host-mgmt
+
+networks:
+  # Host-side only; the guests themselves live on libvirt's internal
+  # bridges 10.66.10-12/24 (see lab/README.md).
+  sentinel-host-mgmt:
+    driver: bridge
+    internal: false    # broker still serves the browser on 127.0.0.1
+    ipam:
+      config: []
+      driver: default
+
+secrets:
+  broker_secret:
+    environment: "BROKER_SECRET"
+  canaries:
+    environment: "CANARIES_JSON"
+  collector_token:
+    environment: "COLLECTOR_TOKEN"
+  lab-keys:
+    environment: "LAB_KEYS_PEM"
+volumes:
+  broker-audit:
